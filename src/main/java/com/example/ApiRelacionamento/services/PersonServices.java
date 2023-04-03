@@ -49,6 +49,11 @@ public class PersonServices {
 
     public Person findAllPerson(PersonDTO personDTO) throws Exception {
         //iniciando busca de filtros de pessoas no banco
+        if (personModel.findByCpf(personDTO.getCpf()).isPresent() && personModel.findByName(personDTO.getName()).isPresent()) {
+            Person person = new Person();
+            personModel.findAllPerson(person);
+            return person;
+        }
         if (personModel.findByCpf(personDTO.getCpf()).isPresent()) {
             Person person = new Person();
             person.setCpf(personDTO.getCpf());
@@ -59,11 +64,6 @@ public class PersonServices {
             Person person = new Person();
             person.setName(personDTO.getName());
             personModel.findByPersonName(person.getName());
-            return person;
-        }
-        if (!personModel.findByCpf(personDTO.getCpf()).isPresent() && personModel.findByName(personDTO.getName()).isPresent()) {
-            Person person = new Person();
-            personModel.findAllPerson(person);
             return person;
         }
         return new Person();
