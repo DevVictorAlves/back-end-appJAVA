@@ -5,10 +5,7 @@ import com.example.ApiRelacionamento.model.entity.Person;
 import com.example.ApiRelacionamento.services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -17,16 +14,24 @@ import javax.validation.Valid;
 public class PersonController {
     @Autowired
     PersonServices personServices;
-    @PostMapping(name = "/register")
+    @PostMapping("/register-person")
     ResponseEntity<?> register(@Valid @RequestBody PersonDTO personDTO) {{
         try {
-            Person person = personServices.validateUserRegistration(personDTO);
+            Person person = personServices.validatePersonRegistration(personDTO);
             return ResponseEntity.ok(person);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-
-}
+  }
+    @GetMapping("/consult")
+    ResponseEntity<?> findAllPerson(@Valid @RequestBody PersonDTO personDTO) {
+        try {
+            Person person = personServices.findAllPerson(personDTO);
+            return ResponseEntity.ok(person);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

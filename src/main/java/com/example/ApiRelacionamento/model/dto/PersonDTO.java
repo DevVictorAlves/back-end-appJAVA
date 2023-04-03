@@ -9,7 +9,7 @@ public class PersonDTO {
     private Integer id;
     private String name;
     private String cpf;
-    private List<Dependent> dependents = new ArrayList<>();
+    private List<DependentDTO> dependents = new ArrayList<>();
 
     public Integer getId() {
         return id;
@@ -35,11 +35,11 @@ public class PersonDTO {
         this.cpf = cpf;
     }
 
-    public List<Dependent> getDependents() {
+    public List<DependentDTO> getDependents() {
         return dependents;
     }
 
-    public void setDependents(List<Dependent> dependents) {
+    public void setDependents(List<DependentDTO> dependents) {
         this.dependents = dependents;
     }
 }
