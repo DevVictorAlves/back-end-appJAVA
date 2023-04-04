@@ -5,6 +5,9 @@ import com.example.ApiRelacionamento.model.entity.Dependent;
 import com.example.ApiRelacionamento.repository.DependentModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.ApiRelacionamento.services.utils.Util.*;
 
 public class DependentService {
@@ -40,11 +43,6 @@ public class DependentService {
             return dependentModel.findByNameAndCpf(dependent.getName(), dependent.getCpf());
 
         }
-        if(dependentDTO.getCpf() == null && dependentDTO.getCpf().isEmpty() && dependentDTO.getName() == null && dependentDTO.getName().isEmpty()) {
-            Dependent dependent = new Dependent();
-            dependentModel.findAllDependent(dependent);
-            return dependent;
-        }
         if(dependentModel.findByDependentCpf(dependentDTO.getCpf()).isPresent()) {
             Dependent dependent = new Dependent();
             dependent.setCpf(dependentDTO.getCpf());
@@ -58,5 +56,13 @@ public class DependentService {
             return dependent;
     }
         return new Dependent();
+    }
+    public List<DependentDTO> findAllDependent(List dependent) throws Exception {
+        if(dependent.isEmpty()){
+        dependentModel.findListDependent(dependent);
+        return dependent;
+        } else {
+            return new ArrayList<>();
+        }
     }
 }
