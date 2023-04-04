@@ -24,5 +24,9 @@ public class Util {
 
         return date.before(today);
     }
+    public static Date stringToDate(String dateString, String format) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        return dateFormat.parse(dateString);
+    }
 }
 

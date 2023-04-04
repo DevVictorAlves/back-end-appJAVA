@@ -5,7 +5,7 @@ import com.example.ApiRelacionamento.model.entity.Dependent;
 import com.example.ApiRelacionamento.repository.DependentModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.example.ApiRelacionamento.services.utils.Util.validarDataNascimento;
+import static com.example.ApiRelacionamento.services.utils.Util.*;
 
 public class DependentService {
     @Autowired
@@ -25,6 +25,7 @@ public class DependentService {
         Dependent dependent = new Dependent();
         dependent.setName(dependentDTO.getName());
         dependent.setCpf(dependentDTO.getCpf());
+        dependent.setBirth(dependentDTO.getBirth());
         dependent.setBirth(dependentDTO.getBirth());
 
         return dependentModel.save(dependent);
