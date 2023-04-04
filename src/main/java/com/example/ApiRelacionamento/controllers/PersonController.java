@@ -25,7 +25,7 @@ public class PersonController {
     }
 
   }
-    @GetMapping("/consult")
+    @GetMapping("/consult-depedent")
     ResponseEntity<?> findAllPerson(@Valid @RequestBody PersonDTO personDTO) {
         try {
             Person person = personServices.findAllPerson(personDTO);
