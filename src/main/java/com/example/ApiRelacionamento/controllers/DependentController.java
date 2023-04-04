@@ -8,10 +8,7 @@ import com.example.ApiRelacionamento.services.DependentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,4 +29,13 @@ public class DependentController {
         }
     }
 }
+    @GetMapping("/consul-dependent")
+    ResponseEntity<?> findAllDependent(@Valid @RequestBody DependentDTO dependentDTO) {
+        try {
+            Dependent dependent = dependentService.findAllDependent(dependentDTO);
+            return ResponseEntity.ok(dependentDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

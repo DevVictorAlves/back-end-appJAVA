@@ -6,5 +6,8 @@ import java.util.Optional;
 
 public interface DependentModel {
     Dependent save(Dependent dependent);
-    Optional<Dependent> findByCpf(String cpf);
+    Optional<Dependent> findByDependentCpf(String cpf);
+    Optional<Dependent> findAllDependent(Dependent dependent);
+    Optional<Dependent> findByDependentName(String name);
+    Dependent findByNameAndCpf(String name, String cpf);
 }
