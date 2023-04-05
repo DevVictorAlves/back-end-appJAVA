@@ -35,8 +35,8 @@ public class DependentController {
     @GetMapping("/consul-dependent")
     ResponseEntity<?> findAllDependent(@Valid @RequestBody DependentDTO dependentDTO) {
         try {
-            if(dependentDTO.getName() == null || dependentDTO.getName().isEmpty()
-                    || dependentDTO.getCpf() == null || dependentDTO.getCpf().isEmpty()){
+            if(dependentDTO.getName() == null && dependentDTO.getName().isEmpty()
+                    || dependentDTO.getCpf() == null || dependentDTO.getCpf().isEmpty()) {
                 List<DependentDTO> dependent = new ArrayList<>();
                 dependent = dependentService.findAllDependent(dependent);
                 return ResponseEntity.ok(dependent);
