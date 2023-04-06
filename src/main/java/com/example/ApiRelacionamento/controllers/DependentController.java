@@ -48,4 +48,17 @@ public class DependentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("consult-dependent-name")
+    ResponseEntity<?> findByNameDependent(@Valid @RequestBody DependentDTO dependentDTO) {
+        try {
+            if(dependentDTO.getName() != null || !dependentDTO.getName().isEmpty()) {
+                List<DependentDTO> dependentDTOS = new ArrayList<>();
+                Dependent dependent = dependentService.findByNameDependent(dependentDTO);
+                return ResponseEntity.ok(dependent.getName());
+            } else
+            { throw new Exception("Nome de dependente inválido"); }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

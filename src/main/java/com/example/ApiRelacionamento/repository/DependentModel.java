@@ -12,4 +12,5 @@ public interface DependentModel {
     List<Dependent> findListDependent(List list);
     Optional<Dependent> findByDependentName(String name);
     Dependent findByNameAndCpf(String name, String cpf);
+    Optional<Dependent> findForIdByName(String name);
 }

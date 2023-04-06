@@ -65,4 +65,13 @@ public class DependentService {
             return new ArrayList<>();
         }
     }
+    public Dependent findByNameDependent(DependentDTO dependentDTO) throws Exception {
+        if (!dependentDTO.getName().isEmpty() || dependentDTO.getName() != null) {
+        Dependent dependent = new Dependent();
+        dependent.setName(dependentDTO.getName());
+        dependentModel.findForIdByName(dependent.getName());
+         return dependent;
+        } else
+        { throw new Exception("Erro ao consultar, nome do dependente está vazio para consulta"); }
+}
 }

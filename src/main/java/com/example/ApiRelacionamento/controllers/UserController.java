@@ -34,7 +34,6 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> findByLoginAndPassword(@Valid @RequestBody UserDTO userDTO) {
         try {
-
            User user  = userService.validateLogin(userDTO);
             return ResponseEntity.ok(user);
         } catch (Exception ex) {
