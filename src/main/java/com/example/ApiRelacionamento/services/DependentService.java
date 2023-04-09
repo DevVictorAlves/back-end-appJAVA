@@ -4,19 +4,20 @@ import com.example.ApiRelacionamento.model.dto.DependentDTO;
 import com.example.ApiRelacionamento.model.entity.Dependent;
 import com.example.ApiRelacionamento.repository.DependentModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.ApiRelacionamento.services.utils.Util.*;
-
+@Service
 public class DependentService {
     @Autowired
     DependentModel dependentModel;
 
     public Dependent validateDependentRegistration(DependentDTO dependentDTO) throws Exception {
         //iniciando validação vitovisk
-        if (dependentModel.findByDependentCpf(dependentDTO.getCpf()).isPresent()) {
+        if (dependentModel.findByCpf(dependentDTO.getCpf()).isPresent()) {
             throw new Exception("CPF já foi cadastrado");
         }
         if (dependentDTO.getName() == null || dependentDTO.getName().isEmpty()) {
@@ -36,31 +37,33 @@ public class DependentService {
 
     public Dependent findAllDependent(DependentDTO dependentDTO) throws Exception {
         //filtros para consulta de dependent --vitolas  commitsss papai
-        if(dependentModel.findByDependentCpf(dependentDTO.getCpf()).isPresent() && dependentModel.findByDependentName(dependentDTO.getName()).isPresent()) {
+        if(dependentModel.findByCpf(dependentDTO.getCpf()).isPresent() &&
+                dependentModel.findByName(dependentDTO.getName()).isPresent()) {
             Dependent dependent = new Dependent();
             dependent.setName(dependentDTO.getName());
             dependent.setCpf(dependentDTO.getCpf());
             return dependentModel.findByNameAndCpf(dependent.getName(), dependent.getCpf());
 
         }
-        if(dependentModel.findByDependentCpf(dependentDTO.getCpf()).isPresent()) {
+        if(dependentModel.findByCpf(dependentDTO.getCpf()).isPresent()) {
             Dependent dependent = new Dependent();
             dependent.setCpf(dependentDTO.getCpf());
-            dependentModel.findByDependentCpf(dependent.getCpf());
+            dependentModel.findByCpf(dependent.getCpf());
             return dependent;
         }
-        if(dependentModel.findByDependentName(dependentDTO.getName()).isPresent()) {
+        if(dependentModel.findByName(dependentDTO.getName()).isPresent()) {
             Dependent dependent = new Dependent();
             dependent.setCpf(dependentDTO.getName());
-            dependentModel.findByDependentName(dependent.getName());
+            dependentModel.findByName(dependent.getName());
             return dependent;
     }
         return new Dependent();
     }
-    public List<DependentDTO> findAllDependent(List dependent) throws Exception {
+    public List<Dependent> findAllDependent(List dependent) throws Exception {
         if(dependent.isEmpty()){
-        dependentModel.findListDependent(dependent);
-        return dependent;
+            List<Dependent> dependents = new ArrayList<>();
+            dependents = dependentModel.findAll();
+            return dependents;
         } else {
             return new ArrayList<>();
         }
@@ -69,7 +72,7 @@ public class DependentService {
         if (!dependentDTO.getName().isEmpty() || dependentDTO.getName() != null) {
         Dependent dependent = new Dependent();
         dependent.setName(dependentDTO.getName());
-        dependentModel.findForIdByName(dependent.getName());
+        dependentModel.findById(dependent.getName());
          return dependent;
         } else
         { throw new Exception("Erro ao consultar, nome do dependente está vazio para consulta"); }

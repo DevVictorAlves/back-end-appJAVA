@@ -47,26 +47,41 @@ public class PersonServices {
         return personModel.save(person);
     }
 
-    public Person findAllPerson(PersonDTO personDTO) throws Exception {
-        //iniciando busca de filtros de pessoas no banco
-        if (personModel.findByCpf(personDTO.getCpf()).isPresent() && personModel.findByName(personDTO.getName()).isPresent()) {
-            Person person = new Person();
-            personModel.findAllPerson(person);
-            return person;
-        }
+    public Person findByPerson(PersonDTO personDTO) throws Exception {
         if (personModel.findByCpf(personDTO.getCpf()).isPresent()) {
             Person person = new Person();
             person.setCpf(personDTO.getCpf());
-            personModel.findByPersonCpf(person.getCpf());
+            personModel.findByCpf(person.getCpf());
             return person;
         }
         if (personModel.findByName(personDTO.getName()).isPresent()) {
             Person person = new Person();
             person.setName(personDTO.getName());
-            personModel.findByPersonName(person.getName());
+            personModel.findByName(person.getName());
             return person;
         }
         return new Person();
 
+    }
+    public List<Person> findAllPerson (List persons) {
+        //iniciando busca de filtros de pessoas no banco
+        if (persons.isEmpty()) {
+            List<Person> person = new ArrayList<>();
+            person = personModel.findAll();
+            return person;
+        }
+        return new ArrayList<>();
+    }
+    public Person deletePerson (PersonDTO personDTO) throws Exception {
+        if(personDTO.getCpf() != null || !personDTO.getCpf().isEmpty()) {
+            Person person = new Person();
+            person.setCpf(personDTO.getCpf());
+            personModel.findByCpf(person.getCpf());
+            personModel.delete(person);
+            return person;
+        }
+        else {
+            throw new Exception("Ocorreu um erro ao delete pessoa");
+        }
     }
 }

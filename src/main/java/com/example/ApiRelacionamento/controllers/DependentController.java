@@ -37,7 +37,7 @@ public class DependentController {
         try {
             if(dependentDTO.getName() == null && dependentDTO.getName().isEmpty()
                     || dependentDTO.getCpf() == null || dependentDTO.getCpf().isEmpty()) {
-                List<DependentDTO> dependent = new ArrayList<>();
+                List<Dependent> dependent = new ArrayList<>();
                 dependent = dependentService.findAllDependent(dependent);
                 return ResponseEntity.ok(dependent);
             } else {

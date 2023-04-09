@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/persons")
@@ -28,10 +30,27 @@ public class PersonController {
     @GetMapping("/consult-depedent")
     ResponseEntity<?> findAllPerson(@Valid @RequestBody PersonDTO personDTO) {
         try {
-            Person person = personServices.findAllPerson(personDTO);
-            return ResponseEntity.ok(person);
+            if(personDTO.getName() == null && personDTO.getName().isEmpty()
+                    || personDTO.getCpf() == null || personDTO.getCpf().isEmpty()) {
+                List<Person> person = new ArrayList<>();
+                person = personServices.findAllPerson(person);
+                return ResponseEntity.ok(person);
+            } else {
+                Person person = personServices.findByPerson(personDTO);
+                return ResponseEntity.ok(person);
+            }
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @DeleteMapping("/delete-person")
+    ResponseEntity<?> deletePerson(@Valid @RequestBody PersonDTO personDTO) {
+        try {
+            Person person = personServices.deletePerson(personDTO);
+            return ResponseEntity.ok(person);
+        } catch (Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
+    }
+
