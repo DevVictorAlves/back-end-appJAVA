@@ -5,9 +5,12 @@ import com.example.ApiRelacionamento.model.dto.PersonDTO;
 import com.example.ApiRelacionamento.model.entity.Dependent;
 import com.example.ApiRelacionamento.model.entity.Person;
 import com.example.ApiRelacionamento.services.DependentService;
+import com.example.ApiRelacionamento.services.PersonServices;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.AccessType;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,8 @@ import java.util.List;
 public class DependentController {
     @Autowired
     DependentService dependentService;
+    @Autowired
+    PersonServices personServices;
 
 
     @PostMapping("/register-dependent")
@@ -61,4 +66,17 @@ public class DependentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/bond")
+    public ResponseEntity<Dependent> bondDependent(@RequestParam String cpf,@RequestParam String name) {
+        try {
+            Dependent BondDependent = dependentService.bondDependentToPerson(cpf, name);
+            return ResponseEntity.ok(BondDependent);
+        } catch (ChangeSetPersister.NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
+
+

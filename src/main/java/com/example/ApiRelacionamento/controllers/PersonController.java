@@ -43,10 +43,10 @@ public class PersonController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete-person")
-    ResponseEntity<?> deletePerson(@Valid @RequestBody PersonDTO personDTO) {
+    @DeleteMapping("/delete-person/{cpf}")
+    ResponseEntity<?> deletePerson(@Valid @RequestBody String cpf) {
         try {
-            Person person = personServices.deletePerson(personDTO);
+            Person person = personServices.deletePerson(cpf);
             return ResponseEntity.ok(person);
         } catch (Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());

@@ -6,11 +6,13 @@ import com.example.ApiRelacionamento.model.entity.Dependent;
 import com.example.ApiRelacionamento.model.entity.Person;
 import com.example.ApiRelacionamento.repository.PersonModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PersonServices {
@@ -72,10 +74,11 @@ public class PersonServices {
         }
         return new ArrayList<>();
     }
-    public Person deletePerson (PersonDTO personDTO) throws Exception {
-        if(personDTO.getCpf() != null || !personDTO.getCpf().isEmpty()) {
+    public Person deletePerson (String cpf) throws Exception {
+        //tentativa de deleta pessoa por cpf, vamos ver o q dar né
+        if(cpf != null || !cpf.isEmpty()) {
             Person person = new Person();
-            person.setCpf(personDTO.getCpf());
+            person.setCpf(cpf);
             personModel.findByCpf(person.getCpf());
             personModel.delete(person);
             return person;
@@ -83,5 +86,12 @@ public class PersonServices {
         else {
             throw new Exception("Ocorreu um erro ao delete pessoa");
         }
+    }
+    public Integer findPersonIdByCpf(String cpf) throws Exception {
+        Optional<Person> personOptional = personModel.findByCpf(cpf);
+        if (personOptional.isPresent()) {
+            return personOptional.get().getId();
+        }
+        throw new Exception("Person not found for CPF: " + cpf);
     }
 }

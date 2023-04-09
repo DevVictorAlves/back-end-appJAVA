@@ -2,18 +2,24 @@ package com.example.ApiRelacionamento.services;
 
 import com.example.ApiRelacionamento.model.dto.DependentDTO;
 import com.example.ApiRelacionamento.model.entity.Dependent;
+import com.example.ApiRelacionamento.model.entity.Person;
 import com.example.ApiRelacionamento.repository.DependentModel;
+import com.example.ApiRelacionamento.repository.PersonModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.ApiRelacionamento.services.utils.Util.*;
 @Service
 public class DependentService {
     @Autowired
     DependentModel dependentModel;
+    @Autowired
+    PersonModel personModel;
 
     public Dependent validateDependentRegistration(DependentDTO dependentDTO) throws Exception {
         //iniciando validação vitovisk
@@ -76,5 +82,26 @@ public class DependentService {
          return dependent;
         } else
         { throw new Exception("Erro ao consultar, nome do dependente está vazio para consulta"); }
+    }
+    public Dependent bondDependentToPerson(String cpf, String name) throws Exception {
+         Optional<Person> personOptional = personModel.findByCpf(cpf);
+        if (!personOptional.isPresent()) {
+            throw new Exception("Pessoa não encontrada com o CPF informado");
+        }
+        Optional<Dependent> dependentOptional = dependentModel.findByName(name);
+        if(!dependentOptional.isPresent()) {
+            throw new Exception("Depedente não encontrado");
+        }
+
+        Dependent getDependent = dependentOptional.get();
+        Person getPerson = personOptional.get();
+
+        Dependent dependent = new Dependent();
+        dependent.setName(getDependent.getName());
+        dependent.setCpf(getDependent.getCpf());
+        dependent.setPerson(getPerson);
+
+        return dependentModel.save(dependent);
+    }
 }
-}
+
