@@ -4,9 +4,11 @@ import com.example.ApiRelacionamento.model.dto.DependentDTO;
 import com.example.ApiRelacionamento.model.dto.PersonDTO;
 import com.example.ApiRelacionamento.model.entity.Dependent;
 import com.example.ApiRelacionamento.model.entity.Person;
+import com.example.ApiRelacionamento.repository.DependentModel;
 import com.example.ApiRelacionamento.repository.PersonModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,10 @@ import java.util.Optional;
 public class PersonServices {
     @Autowired
     private PersonModel personModel;
+    @Autowired
+    private DependentModel dependentModel;
 
-    public Person validatePersonRegistration(PersonDTO personDTO) throws Exception {
+    public Person validatePersonRegistration(PersonDTO personDTO, String dependentName) throws Exception {
         //iniciando validação vitovisk
         if (personModel.findByCpf(personDTO.getCpf()).isPresent()) {
             throw new Exception("CPF já foi cadastrado");
@@ -31,22 +35,26 @@ public class PersonServices {
         Person person = new Person();
         person.setName(personDTO.getName());
         person.setCpf(personDTO.getCpf());
-        List<Dependent> dependents = new ArrayList<>();
-        for (DependentDTO dependentDTO : personDTO.getDependents()) {
-            if (dependentDTO.getName() == null || dependentDTO.getName().isEmpty()) {
-                throw new Exception("O nome do dependente não pode ser vazio");
-            }
 
-            Dependent dependent = new Dependent();
-            dependent.setName(dependentDTO.getName());
-            dependent.setBirth(dependentDTO.getBirth());
-            dependent.setPerson(person);
-            dependents.add(dependent);
-        }
+        Dependent dependent = new Dependent();
+        dependent.setName(dependentName);
+        Optional<Dependent> found = dependentModel.findByName(dependent.getName());
+        List<Dependent> dependents = new ArrayList<>();
+        dependents.add(found.get());
 
         person.setDependents(dependents);
 
-        return personModel.save(person);
+        Dependent dependentUpdate = new Dependent();
+        dependentUpdate = found.get();
+        dependentUpdate.setPerson(person);
+        personModel.save(person);
+
+        if(!dependentModel.existsByPersonId(dependentUpdate.getPerson().getId())) {
+            dependentModel.save(dependentUpdate);
+            return person;
+        } else {
+            throw new Exception("Id já vinculado");
+        }
     }
 
     public Person findByPerson(PersonDTO personDTO) throws Exception {
@@ -65,6 +73,16 @@ public class PersonServices {
         return new Person();
 
     }
+    public Person findByPersonCpf(String cpf) throws Exception {
+        if (personModel.findByCpf(cpf).isPresent()) {
+            Person person = new Person();
+            person.setCpf(cpf);
+            personModel.findByCpf(person.getCpf());
+            return person;
+        } else {
+            throw new Exception("Não foi encontrado pessoa no banco de dados");
+        }
+    }
     public List<Person> findAllPerson (List persons) {
         //iniciando busca de filtros de pessoas no banco
         if (persons.isEmpty()) {
@@ -76,16 +94,14 @@ public class PersonServices {
     }
     public Person deletePerson (String cpf) throws Exception {
         //tentativa de deleta pessoa por cpf, vamos ver o q dar né
-        if(cpf != null || !cpf.isEmpty()) {
-            Person person = new Person();
-            person.setCpf(cpf);
-            personModel.findByCpf(person.getCpf());
+        Optional<Person> personOptional = personModel.findByCpf(cpf);
+        if (personOptional.isPresent()) {
+            Person person = personOptional.get();
             personModel.delete(person);
-            return person;
+        } else {
+            throw new Exception("Pessoa não encontrada com o CPF informado");
         }
-        else {
-            throw new Exception("Ocorreu um erro ao delete pessoa");
-        }
+        return new Person();
     }
     public Integer findPersonIdByCpf(String cpf) throws Exception {
         Optional<Person> personOptional = personModel.findByCpf(cpf);

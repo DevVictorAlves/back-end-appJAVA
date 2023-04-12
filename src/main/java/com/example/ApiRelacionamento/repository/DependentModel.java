@@ -12,9 +12,10 @@ import java.util.Optional;
 public interface DependentModel extends org.springframework.data.repository.Repository<Dependent, Integer> {
     Dependent save(Dependent dependent);
     Optional<Dependent> findByCpf(String cpf);
-
     List<Dependent> findAll();
     Optional<Dependent> findByName(String name);
+    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Dependent d WHERE d.person.id = :personId")
+    boolean existsByPersonId(Integer personId);
     Dependent findByNameAndCpf(String name, String cpf);
     Optional<Dependent> findById(String name);
 }

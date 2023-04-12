@@ -28,14 +28,14 @@ public class DependentController {
 
 
     @PostMapping("/register-dependent")
-    ResponseEntity<?> registerDependent(@Valid @RequestBody DependentDTO dependentDTO) {{
+    ResponseEntity<?> registerDependent(@Valid @RequestBody DependentDTO dependentDTO) {
         try {
             Dependent dependent = dependentService.validateDependentRegistration(dependentDTO);
             return ResponseEntity.ok(dependentDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
+
 }
     @GetMapping("/consul-dependent")
     ResponseEntity<?> findAllDependent(@Valid @RequestBody DependentDTO dependentDTO) {
@@ -53,7 +53,7 @@ public class DependentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("consult-dependent-name")
+    @GetMapping("/consult-dependent-name")
     ResponseEntity<?> findByNameDependent(@Valid @RequestBody DependentDTO dependentDTO) {
         try {
             if(dependentDTO.getName() != null || !dependentDTO.getName().isEmpty()) {
@@ -67,7 +67,7 @@ public class DependentController {
         }
     }
     @PostMapping("/bond")
-    public ResponseEntity<Dependent> bondDependent(@RequestParam String cpf,@RequestParam String name) {
+    public ResponseEntity<?> bondDependent(@Valid @RequestParam String name, @RequestParam String cpf) {
         try {
             Dependent BondDependent = dependentService.bondDependentToPerson(cpf, name);
             return ResponseEntity.ok(BondDependent);

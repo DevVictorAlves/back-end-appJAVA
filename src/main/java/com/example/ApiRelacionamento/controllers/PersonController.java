@@ -4,6 +4,7 @@ import com.example.ApiRelacionamento.model.dto.PersonDTO;
 import com.example.ApiRelacionamento.model.entity.Person;
 import com.example.ApiRelacionamento.services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,28 +18,23 @@ public class PersonController {
     @Autowired
     PersonServices personServices;
     @PostMapping("/register-person")
-    ResponseEntity<?> register(@Valid @RequestBody PersonDTO personDTO) {{
+    ResponseEntity<?> register(@Valid @RequestParam String name, @RequestParam String cpf, @RequestParam String dependentName) {
         try {
-            Person person = personServices.validatePersonRegistration(personDTO);
-            return ResponseEntity.ok(person);
+            PersonDTO personDTO = new PersonDTO();
+            personDTO.setCpf(cpf);
+            personDTO.setName(name);
+            Person person = personServices.validatePersonRegistration(personDTO, dependentName);
+            return ResponseEntity.ok(HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
-
   }
-    @GetMapping("/consult-depedent")
-    ResponseEntity<?> findAllPerson(@Valid @RequestBody PersonDTO personDTO) {
+    @GetMapping("/findByCpf")
+    ResponseEntity<?> findByPersonCpf(@Valid @RequestParam String cpf) {
         try {
-            if(personDTO.getName() == null && personDTO.getName().isEmpty()
-                    || personDTO.getCpf() == null || personDTO.getCpf().isEmpty()) {
-                List<Person> person = new ArrayList<>();
-                person = personServices.findAllPerson(person);
+                Person person = personServices.findByPersonCpf(cpf);
                 return ResponseEntity.ok(person);
-            } else {
-                Person person = personServices.findByPerson(personDTO);
-                return ResponseEntity.ok(person);
-            }
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -50,7 +46,7 @@ public class PersonController {
             return ResponseEntity.ok(person);
         } catch (Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
-    }
 

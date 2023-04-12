@@ -84,24 +84,25 @@ public class DependentService {
         { throw new Exception("Erro ao consultar, nome do dependente está vazio para consulta"); }
     }
     public Dependent bondDependentToPerson(String cpf, String name) throws Exception {
-         Optional<Person> personOptional = personModel.findByCpf(cpf);
+        Optional<Person> personOptional = personModel.findByCpf(cpf);
         if (!personOptional.isPresent()) {
             throw new Exception("Pessoa não encontrada com o CPF informado");
         }
+
         Optional<Dependent> dependentOptional = dependentModel.findByName(name);
-        if(!dependentOptional.isPresent()) {
-            throw new Exception("Depedente não encontrado");
+        if (!dependentOptional.isPresent()) {
+            throw new Exception("Dependente não encontrado");
         }
 
-        Dependent getDependent = dependentOptional.get();
-        Person getPerson = personOptional.get();
+        Dependent dependent = dependentOptional.get();
+        Person person = personOptional.get();
 
-        Dependent dependent = new Dependent();
-        dependent.setName(getDependent.getName());
-        dependent.setCpf(getDependent.getCpf());
-        dependent.setPerson(getPerson);
-
-        return dependentModel.save(dependent);
+        if (dependent.getPerson() != null) {
+            throw new Exception("já existe uma pessoa vinculada");
+        } else {
+            dependent.setPerson(person);
+            return dependentModel.save(dependent);
+        }
     }
 }
 
