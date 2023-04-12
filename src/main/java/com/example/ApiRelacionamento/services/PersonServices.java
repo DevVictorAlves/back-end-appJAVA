@@ -44,8 +44,7 @@ public class PersonServices {
 
         person.setDependents(dependents);
 
-        Dependent dependentUpdate = new Dependent();
-        dependentUpdate = found.get();
+        Dependent dependentUpdate = dependentUpdate = found.get();
         dependentUpdate.setPerson(person);
         personModel.save(person);
 

@@ -39,8 +39,8 @@ public class PersonController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete-person/{cpf}")
-    ResponseEntity<?> deletePerson(@Valid @RequestBody String cpf) {
+    @DeleteMapping("/delete-person")
+    ResponseEntity<?> deletePerson(@Valid @RequestParam("cpf") String cpf) {
         try {
             Person person = personServices.deletePerson(cpf);
             return ResponseEntity.ok(person);

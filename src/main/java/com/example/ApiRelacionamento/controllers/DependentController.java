@@ -70,7 +70,7 @@ public class DependentController {
     public ResponseEntity<?> bondDependent(@Valid @RequestParam String name, @RequestParam String cpf) {
         try {
             Dependent BondDependent = dependentService.bondDependentToPerson(cpf, name);
-            return ResponseEntity.ok(BondDependent);
+            return ResponseEntity.ok(HttpStatus.CREATED);
         } catch (ChangeSetPersister.NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
